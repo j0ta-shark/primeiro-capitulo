@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Primeiro Capítulo</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,wght@1,500;1,600&family=EB+Garamond:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div class="sky"></div>
+  <div class="sun-glow"></div>
+  <div class="waves-wrap">
+    <div class="wave wave--back" id="waveBack"></div>
+    <div class="wave wave--front" id="waveFront"></div>
+  </div>
+
+  <section id="envelopeScene" class="envelope-scene">
+    <div class="envelope" id="envelope">
+      <div class="envelope__back"></div>
+      <div class="envelope__flap"></div>
+      <button id="seal" class="seal" aria-label="Abrir a carta">
+        <span class="seal__emblem">&amp;</span>
+      </button>
+    </div>
+    <p class="envelope__cue">toque no selo para abrir</p>
+  </section>
+
+  <section id="letterStage" class="stage" aria-hidden="true">
+    <main class="letter">
+      <h1 class="letter__title">Primeiro Capítulo</h1>
+      <div class="letter__rule"></div>
+      <span class="letter__cue" aria-hidden="true">↓</span>
+
+      <div class="letter__body">
+        <p>Nosso momento, apesar de bastante movimentado,<br>com você por perto fazia o mundo parecer quieto.</p>
+
+        <p>Exceto na parte de um vendedor de água doido das ideias,<br>que supostamente era cheio da grana : )<br>Esse som deixou o mundo bem barulhento haha.</p>
+
+        <p>Ver seu sorriso, ouvir sua risada,<br>poder segurar sua mão...<br>como queria que aquele momento tivesse durado mais.</p>
+
+        <p>Meu único arrependimento daquele dia<br>foi não ter te abraçado mais forte.</p>
+
+        <p>Todas essas lembranças me fazem querer<br>estar com você novamente.</p>
+
+        <p class="letter__highlight">Não sei onde exatamente essa história vai dar,<br>mas gostei daquele nosso primeiro capítulo.</p>
+      </div>
+
+      <div class="letter__signature">
+        <p>— De: João</p>
+        <p>— Para: Lívia <span aria-hidden="true">💛</span></p>
+      </div>
+    </main>
+  </section>
+
+  <script>
+    (function () {
+      var envelope = document.getElementById('envelope');
+      var seal = document.getElementById('seal');
+      var envelopeScene = document.getElementById('envelopeScene');
+      var stage = document.getElementById('letterStage');
+      var waveBack = document.getElementById('waveBack');
+      var waveFront = document.getElementById('waveFront');
+      var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      function updateTide() {
+        var scrollable = document.documentElement.scrollHeight - window.innerHeight;
+        var frac = scrollable > 0 ? Math.min(1, Math.max(0, window.scrollY / scrollable)) : 0;
+        waveBack.style.height = (28 + frac * 16) + 'vh';
+        waveFront.style.height = (20 + frac * 16) + 'vh';
+      }
+
+      seal.addEventListener('click', function () {
+        envelope.classList.add('is-open');
+
+        setTimeout(function () {
+          envelopeScene.style.display = 'none';
+          stage.style.display = 'flex';
+          stage.setAttribute('aria-hidden', 'false');
+
+          requestAnimationFrame(function () {
+            stage.classList.add('is-visible');
+            updateTide();
+          });
+        }, reduceMotion ? 50 : 900);
+      });
+
+      window.addEventListener('scroll', function () {
+        requestAnimationFrame(updateTide);
+      }, { passive: true });
+      window.addEventListener('resize', updateTide);
+      updateTide();
+    })();
+  </script>
+
+</body>
+</html>

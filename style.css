@@ -1,0 +1,284 @@
+:root {
+  --sky-top: #0d2b4e;
+  --sky-mid: #1f6fa4;
+  --sky-warm: #ffb768;
+  --sea-deep: #073044;
+  --sea-darker: #03141d;
+  --paper: #fdf3e2;
+  --kraft: #caa06a;
+  --kraft-dark: #a97e4c;
+  --wax: #b5551f;
+  --wax-dark: #7a3712;
+  --gold-soft: #ffd79b;
+}
+
+* { box-sizing: border-box; }
+
+html, body { margin: 0; padding: 0; }
+
+body {
+  font-family: 'EB Garamond', serif;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+/* ---------- Fixed sky / sun / sea (behind everything) ---------- */
+
+.sky {
+  position: fixed;
+  inset: 0;
+  z-index: -4;
+  background: linear-gradient(180deg,
+    var(--sky-top) 0%,
+    var(--sky-mid) 40%,
+    var(--sky-warm) 68%,
+    var(--sea-deep) 82%,
+    var(--sea-darker) 100%);
+}
+
+.sun-glow {
+  position: fixed;
+  left: 50%;
+  bottom: 26vh;
+  width: 240px;
+  height: 240px;
+  transform: translateX(-50%);
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 215, 155, 0.9) 0%, rgba(255, 183, 104, 0.5) 40%, rgba(255, 183, 104, 0) 70%);
+  filter: blur(2px);
+  z-index: -3;
+  pointer-events: none;
+}
+
+.waves-wrap {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 60vh;
+  z-index: -2;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.wave {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-repeat: repeat-x;
+  background-size: 1000px 100%;
+}
+
+.wave--back {
+  height: 28vh;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1000 120' preserveAspectRatio='none'%3E%3Cpath d='M0,60 C125,20 375,100 500,60 C625,20 875,100 1000,60 L1000,120 L0,120 Z' fill='%23145f82' fill-opacity='0.55'/%3E%3C/svg%3E");
+  animation: waveScroll 26s linear infinite;
+}
+
+.wave--front {
+  height: 20vh;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1000 120' preserveAspectRatio='none'%3E%3Cpath d='M0,70 C125,25 375,115 500,70 C625,25 875,115 1000,70 L1000,120 L0,120 Z' fill='%230a3a52' fill-opacity='0.85'/%3E%3C/svg%3E");
+  animation: waveScroll 16s linear infinite reverse;
+}
+
+@keyframes waveScroll {
+  from { background-position-x: 0; }
+  to   { background-position-x: -1000px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wave { animation: none; }
+}
+
+/* ---------- Envelope ---------- */
+
+.envelope-scene {
+  position: relative;
+  z-index: 1;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5rem;
+}
+
+.envelope {
+  position: relative;
+  width: min(86vw, 380px);
+  aspect-ratio: 3 / 2;
+  perspective: 1200px;
+}
+
+.envelope__back {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(160deg, var(--kraft) 0%, var(--kraft-dark) 100%);
+  border-radius: 6px;
+  box-shadow: 0 25px 45px -20px rgba(2, 8, 14, 0.7);
+}
+
+.envelope__flap {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 58%;
+  background: linear-gradient(160deg, var(--kraft) 0%, var(--kraft-dark) 100%);
+  clip-path: polygon(0 0, 100% 0, 50% 100%);
+  transform-origin: top center;
+  transform: rotateX(0deg);
+  transition: transform 1s cubic-bezier(.6,.2,.3,1), opacity .5s ease .5s;
+  box-shadow: 0 8px 16px -8px rgba(2, 8, 14, 0.4);
+  z-index: 3;
+  backface-visibility: hidden;
+}
+
+.envelope.is-open .envelope__flap {
+  transform: rotateX(-165deg);
+  opacity: 0;
+}
+
+.seal {
+  position: absolute;
+  top: 52%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 64px;
+  height: 64px;
+  border: none;
+  cursor: pointer;
+  border-radius: 60% 40% 55% 45% / 55% 45% 60% 40%;
+  background: radial-gradient(circle at 35% 30%, var(--gold-soft) 0%, var(--wax) 45%, var(--wax-dark) 100%);
+  box-shadow: 0 6px 14px -4px rgba(2, 8, 14, 0.6), inset 0 -3px 6px rgba(0, 0, 0, 0.35), inset 0 2px 4px rgba(255, 255, 255, 0.35);
+  color: rgba(255, 246, 230, 0.85);
+  font-family: 'Bodoni Moda', serif;
+  font-style: italic;
+  font-size: 1.4rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 4;
+  transition: transform .5s ease, opacity .5s ease;
+}
+
+.seal:hover { transform: translate(-50%, -50%) scale(1.05); }
+
+.seal:focus-visible {
+  outline: 2px solid var(--gold-soft);
+  outline-offset: 3px;
+}
+
+.envelope.is-open .seal {
+  transform: translate(-50%, -50%) scale(0.4) rotate(25deg);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.envelope__cue {
+  color: var(--paper);
+  opacity: .85;
+  font-style: italic;
+  font-size: .95rem;
+}
+
+/* ---------- Letter stage (tide rises on scroll) ---------- */
+
+.stage {
+  display: none;
+  position: relative;
+  z-index: 1;
+  min-height: 160vh;
+  justify-content: center;
+  padding: 14vh 6vw 30vh;
+  opacity: 0;
+  transition: opacity 0.8s ease;
+}
+
+.stage.is-visible { opacity: 1; }
+
+.letter {
+  max-width: 600px;
+  width: 100%;
+  text-align: center;
+  color: var(--paper);
+  background: rgba(6, 22, 34, 0.4);
+  border: 1px solid rgba(255, 215, 155, 0.28);
+  border-radius: 20px;
+  backdrop-filter: blur(8px) saturate(120%);
+  -webkit-backdrop-filter: blur(8px) saturate(120%);
+  box-shadow: 0 24px 50px -28px rgba(1, 6, 11, 0.65);
+  padding: clamp(2rem, 5vw, 3rem) clamp(1.5rem, 6vw, 2.75rem);
+}
+
+.letter__title {
+  font-family: 'Bodoni Moda', serif;
+  font-style: italic;
+  font-weight: 500;
+  font-size: clamp(2rem, 5.5vw, 3rem);
+  margin: 0;
+  text-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
+  line-height: 1.2;
+}
+
+.letter__rule {
+  width: 70px;
+  height: 1px;
+  margin: 1.6rem auto 0.6rem;
+  background: linear-gradient(90deg, transparent, var(--gold-soft), transparent);
+}
+
+.letter__cue {
+  display: block;
+  margin: 0 auto 2.4rem;
+  font-size: 1.2rem;
+  color: var(--paper);
+  opacity: 0.75;
+  animation: bob 2.4s ease-in-out infinite;
+}
+
+@keyframes bob {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(8px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .letter__cue { animation: none; }
+}
+
+.letter__body p {
+  font-size: clamp(1.02rem, 2.1vw, 1.15rem);
+  line-height: 1.95;
+  opacity: 0.92;
+  max-width: 46ch;
+  margin: 0 auto 1.6rem;
+}
+
+.letter__body p.letter__highlight {
+  font-style: italic;
+  color: var(--gold-soft);
+  opacity: 1;
+  font-size: clamp(1.15rem, 2.4vw, 1.35rem);
+  border-top: 1px solid rgba(255, 215, 155, 0.4);
+  border-bottom: 1px solid rgba(255, 215, 155, 0.4);
+  padding: 1.2rem 0;
+  margin: 2.2rem auto;
+  max-width: 40ch;
+}
+
+.letter__signature { margin-top: 1.8rem; }
+
+.letter__signature p {
+  font-style: italic;
+  font-size: 0.95rem;
+  color: var(--gold-soft);
+  opacity: 0.85;
+  margin: 0.2rem 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .envelope__flap, .seal, .stage {
+    transition: none;
+  }
+}
